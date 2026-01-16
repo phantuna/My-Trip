@@ -1,6 +1,7 @@
 package org.example.demo_datn.Controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.demo_datn.Dto.Response.Photo.PhotoResponse;
 import org.example.demo_datn.Entity.Photo;
 import org.example.demo_datn.Service.Photo.PhotoService;
 import org.springframework.http.ResponseEntity;
@@ -18,15 +19,16 @@ public class PhotoController {
     private final PhotoService photoService;
 
     @PostMapping("/upload")
-    public ResponseEntity<Photo> upload(
-            @RequestPart("file") MultipartFile file,
+    public ResponseEntity<List<PhotoResponse>> upload(
+            @RequestParam("files") List<MultipartFile> files,
             @RequestParam String albumId
-    ) throws IOException {
-        return ResponseEntity.ok(photoService.uploadPhoto(file, albumId));
+    ) {
+        return ResponseEntity.ok(photoService.uploadPhotos(files, albumId));
     }
 
+
     @GetMapping("/album/{albumId}")
-    public ResponseEntity<List<Photo>> getByAlbum(@PathVariable String albumId) {
+    public ResponseEntity<List<PhotoResponse>> getByAlbum(@PathVariable String albumId) {
         return ResponseEntity.ok(photoService.getPhotosByAlbum(albumId));
     }
 
@@ -38,7 +40,7 @@ public class PhotoController {
     }
 
     @PutMapping("/move/{photoId}")
-    public ResponseEntity<Photo> move(
+    public ResponseEntity<PhotoResponse> move(
             @PathVariable String photoId,
             @RequestParam String albumId
     ) {

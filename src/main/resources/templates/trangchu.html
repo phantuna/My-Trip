@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" class="light" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>TravelApp - Trang Chủ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b8cee",
+                        "primary-hover": "#1a7bd9",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1a242d",
+                        "text-main-light": "#111418",
+                        "text-main-dark": "#e0e6ed",
+                        "text-secondary-light": "#617589",
+                        "text-secondary-dark": "#94a3b8",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main-light dark:text-text-main-dark antialiased transition-colors duration-200">
+<div class="flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 flex items-center justify-between border-b border-solid border-[#e5e7eb] dark:border-[#2d3748] bg-surface-light dark:bg-surface-dark px-10 py-3 shadow-sm transition-colors duration-200">
+        <div class="flex items-center gap-4 text-text-main-light dark:text-text-main-dark">
+            <div class="size-8 text-primary">
+                <span class="material-symbols-outlined !text-[32px]">travel_explore</span>
+            </div>
+            <h2 class="text-text-main-light dark:text-text-main-dark text-xl font-bold leading-tight tracking-[-0.015em]">TravelApp</h2>
+        </div>
+        <nav class="hidden md:flex flex-1 justify-center gap-8">
+            <a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-semibold leading-normal" href="#">Bản đồ</a>
+            <a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-semibold leading-normal" href="#">Bài viết</a>
+            <a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-semibold leading-normal" href="#">Tạo mới</a>
+            <a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary transition-colors text-sm font-semibold leading-normal" href="#">Hồ sơ</a>
+        </nav>
+        <div class="flex items-center gap-4">
+            <button class="group flex items-center justify-center rounded-full size-10 hover:bg-background-light dark:hover:bg-background-dark transition-colors">
+                <span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark group-hover:text-primary">notifications</span>
+            </button>
+
+            <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-primary-hover text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors shadow-md">
+                <span th:href="login.html" class="truncate">Đăng nhập</span>
+            </button>
+        </div>
+    </header>
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col">
+        <!-- Hero Section -->
+        <section class="relative w-full">
+            <div class="flex min-h-[560px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center px-4 py-16 text-center" data-alt="Beautiful landscape with mountains and lake at sunset" style='background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuByHoXb2XgKKGOrXddCaHwYvbTCLSsERwkDxI2loWtlUR1vE8_mb7Gx8fqLSqJgGdzofzypyYom7LIF2Wj-1fC-mI3NPC3RCQIQ8NKoEhKN2eHLQh-Bw2Zt4O-pxZE1TzKXctFQgTv-jxZGG0wh9g-Z0Yo6NA97Nh9Fo85Tt4jeXZjNazGL0oTQw-r_yv3_6DUg5oEFgUCfuLpQPeeV_Ye45Id895xuSGBdF0fZv5iFRI7BhWkHhwVT6SF_8DwCnV3SrUIDCUMEpVFY");'>
+                <div class="flex flex-col gap-4 max-w-3xl animate-fade-in-up">
+                    <h1 class="text-white text-4xl md:text-6xl font-black leading-tight tracking-[-0.033em] drop-shadow-lg">
+                        Khám phá điểm đến tiếp theo của bạn
+                    </h1>
+                    <h2 class="text-gray-200 text-lg md:text-xl font-medium leading-relaxed drop-shadow-md">
+                        Tìm kiếm hàng ngàn địa điểm hấp dẫn và bài viết chia sẻ kinh nghiệm du lịch từ cộng đồng.
+                    </h2>
+                </div>
+                <div class="w-full max-w-[640px] mt-6 shadow-xl rounded-xl">
+                    <label class="flex w-full items-stretch rounded-xl h-14 md:h-16 bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-gray-700 overflow-hidden focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition-all">
+                        <div class="flex items-center justify-center pl-4 md:pl-6">
+                            <span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">search</span>
+                        </div>
+                        <input class="flex w-full min-w-0 flex-1 resize-none bg-transparent border-none text-text-main-light dark:text-text-main-dark focus:ring-0 placeholder:text-text-secondary-light dark:placeholder:text-text-secondary-dark px-4 text-base md:text-lg font-normal" placeholder="Tìm kiếm địa điểm hoặc bài viết..." value=""/>
+                        <div class="flex items-center justify-center pr-2">
+                            <button class="flex cursor-pointer items-center justify-center rounded-lg h-10 md:h-12 px-6 bg-primary hover:bg-primary-hover text-white text-base font-bold transition-colors">
+                                Tìm kiếm
+                            </button>
+                        </div>
+                    </label>
+                </div>
+                <!-- Quick Tags -->
+                <div class="flex flex-wrap justify-center gap-3 mt-4">
+                    <span class="text-white/80 text-sm font-medium">Phổ biến:</span>
+                    <a class="px-3 py-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full text-white text-sm transition-colors" href="#">Đà Lạt</a>
+                    <a class="px-3 py-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full text-white text-sm transition-colors" href="#">Hà Giang</a>
+                    <a class="px-3 py-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full text-white text-sm transition-colors" href="#">Phú Quốc</a>
+                    <a class="px-3 py-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full text-white text-sm transition-colors" href="#">Ẩm thực</a>
+                </div>
+            </div>
+        </section>
+        <div class="px-4 md:px-10 lg:px-40 py-10 w-full mx-auto max-w-[1440px]">
+            <!-- Intro Section -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <div class="flex flex-col items-center text-center p-6 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                    <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
+                        <span class="material-symbols-outlined">explore</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Khám phá không giới hạn</h3>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Tìm những viên ngọc ẩn giấu và những điểm đến nổi tiếng nhất.</p>
+                </div>
+                <div class="flex flex-col items-center text-center p-6 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                    <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
+                        <span class="material-symbols-outlined">edit_note</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Chia sẻ trải nghiệm</h3>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Viết bài review, chia sẻ lịch trình và giúp đỡ cộng đồng du lịch.</p>
+                </div>
+                <div class="flex flex-col items-center text-center p-6 bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+                    <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
+                        <span class="material-symbols-outlined">groups</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Kết nối cộng đồng</h3>
+                    <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Gặp gỡ những người bạn mới có cùng đam mê xê dịch.</p>
+                </div>
+            </section>
+            <!-- Featured Destinations -->
+            <section class="mb-16">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-text-main-light dark:text-text-main-dark text-2xl font-bold leading-tight tracking-[-0.015em]">Địa điểm nổi bật</h2>
+                    <a class="text-primary font-semibold text-sm hover:underline flex items-center gap-1" href="#">
+                        Xem tất cả <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </a>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Card 1 -->
+                    <div class="group flex flex-col gap-3 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm hover:shadow-lg transition-shadow border border-transparent hover:border-gray-100 dark:hover:border-gray-700 cursor-pointer">
+                        <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
+                            <div class="absolute inset-0 bg-cover bg-center transform group-hover:scale-110 transition-transform duration-500" data-alt="Lanterns lighting up old town street at night" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDytaCuMMMMPbfhocTnQHiD_8ZtFQdWSiXrmfgyaKwxg8PNI8C682EYQmY4XjyKVXCXgcOAjBesdbISXlSXrGVuTzxMNcSURwBuj2JuEAMv6hFGrogKRLlqMZLvACb2QJ5sfJwrK_U8oKs-5kEtmcC93fG0Ow5UfiWto9P_fzAXP4bT1MP2A41OwuZJkp4cEXE3IUuMwRGmig0-54UdSm71h6MX0gNu-kSIIu7YywKi5wiDHlA0xDTcp7MwRTVPtDt16I-gvmZnTGI3");'>
+                            </div>
+                            <div class="absolute top-2 right-2 bg-white/90 dark:bg-black/60 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-yellow-500 text-[16px] fill">star</span>
+                                <span class="text-xs font-bold text-text-main-light dark:text-text-main-dark">4.8</span>
+                            </div>
+                        </div>
+                        <div class="px-1">
+                            <p class="text-text-main-light dark:text-text-main-dark text-lg font-bold leading-tight mb-1">Hội An</p>
+                            <div class="flex items-center gap-1 text-text-secondary-light dark:text-text-secondary-dark text-sm">
+                                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                                <span>Quảng Nam</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="group flex flex-col gap-3 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm hover:shadow-lg transition-shadow border border-transparent hover:border-gray-100 dark:hover:border-gray-700 cursor-pointer">
+                        <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
+                            <div class="absolute inset-0 bg-cover bg-center transform group-hover:scale-110 transition-transform duration-500" data-alt="Limestone islands rising from emerald waters" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDut56Ev3uQ3c5juRtcexKAuxAx1L9RiME-VxAiZW3vbSOV80ylZRNKcqylHhq6WchJXlLVi_HPQpKGMejucV5NEkEdejpY2tFuJ5njXfjl2nCj1KAFCulm0qn6WQPJd0WTSPwHb_bdsgYryFzt3TEjuPfKJ8-q7E4ZhJmg5VhHmm-8UjKmNuJnIevDLty89V-LMr8mt7u0k7Nw9Wr3zzDtfbey_jWxAat3Q_9xO8xuhuCtJbbRsS-JSPG1UGVP0zIcZYWJ5qwT5ZdA");'>
+                            </div>
+                            <div class="absolute top-2 right-2 bg-white/90 dark:bg-black/60 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-yellow-500 text-[16px] fill">star</span>
+                                <span class="text-xs font-bold text-text-main-light dark:text-text-main-dark">4.9</span>
+                            </div>
+                        </div>
+                        <div class="px-1">
+                            <p class="text-text-main-light dark:text-text-main-dark text-lg font-bold leading-tight mb-1">Vịnh Hạ Long</p>
+                            <div class="flex items-center gap-1 text-text-secondary-light dark:text-text-secondary-dark text-sm">
+                                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                                <span>Quảng Ninh</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="group flex flex-col gap-3 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm hover:shadow-lg transition-shadow border border-transparent hover:border-gray-100 dark:hover:border-gray-700 cursor-pointer">
+                        <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
+                            <div class="absolute inset-0 bg-cover bg-center transform group-hover:scale-110 transition-transform duration-500" data-alt="Pine forest and misty hills" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBR4mkhla-yioNJDd3r_eyXTWD8rka5TjuHbuG_RjRU0bGd35HZWHHa-HiYTiBk2MgQ1ZCBELRqmF3u77Ql_1vSNg6vEiBCGRurt0RFSNbpb9HllaU3HKOZeEwJD4cqIlPpeHL3PhOiVa8q08JcpGviCtb8vjNULryRKll2XIwiW5qNVe6_137XIUq5QHdMauxaOJZKghsd8qP3TzXDWk35A9-em2b59YCLolllpP4BQVaCz9z5w0ePhRdLNUeZt_0Wj2_Ymy_4ArWn");'>
+                            </div>
+                            <div class="absolute top-2 right-2 bg-white/90 dark:bg-black/60 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-yellow-500 text-[16px] fill">star</span>
+                                <span class="text-xs font-bold text-text-main-light dark:text-text-main-dark">4.7</span>
+                            </div>
+                        </div>
+                        <div class="px-1">
+                            <p class="text-text-main-light dark:text-text-main-dark text-lg font-bold leading-tight mb-1">Đà Lạt</p>
+                            <div class="flex items-center gap-1 text-text-secondary-light dark:text-text-secondary-dark text-sm">
+                                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                                <span>Lâm Đồng</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="group flex flex-col gap-3 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm hover:shadow-lg transition-shadow border border-transparent hover:border-gray-100 dark:hover:border-gray-700 cursor-pointer">
+                        <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
+                            <div class="absolute inset-0 bg-cover bg-center transform group-hover:scale-110 transition-transform duration-500" data-alt="Tropical beach with palm trees and white sand" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuApR5JhBVYVloTi9wk3sel7uAv-qEDRd7xnz-hDh-3UnmfbQL-6__ay7ZEjoePhCWW3GjlKHWmrxkcua_bnjOnvouxv-dIxhvWTaArVzj8a-G4mSfLFnN4I62T1Go21cTQRRDxncZ0trf8NXsSrrkLjCKZssoMFX8GPrpO3bLtV0UgAA3z6EsWUODY8AvGMxuSiUAP4OcPviJ8A_6Nr3nJcUBEgUW2dM0ITn48qMWA_RzbjgAgxdOpfngUpKEaCSungLS_5TDIW8YR7");'>
+                            </div>
+                            <div class="absolute top-2 right-2 bg-white/90 dark:bg-black/60 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-yellow-500 text-[16px] fill">star</span>
+                                <span class="text-xs font-bold text-text-main-light dark:text-text-main-dark">4.6</span>
+                            </div>
+                        </div>
+                        <div class="px-1">
+                            <p class="text-text-main-light dark:text-text-main-dark text-lg font-bold leading-tight mb-1">Phú Quốc</p>
+                            <div class="flex items-center gap-1 text-text-secondary-light dark:text-text-secondary-dark text-sm">
+                                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                                <span>Kiên Giang</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Latest Articles -->
+            <section>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-text-main-light dark:text-text-main-dark text-2xl font-bold leading-tight tracking-[-0.015em]">Bài viết mới nhất</h2>
+                    <a class="text-primary font-semibold text-sm hover:underline flex items-center gap-1" href="#">
+                        Xem tất cả <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </a>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Article 1 -->
+                    <article class="flex flex-col overflow-hidden rounded-xl border border-[#dbe0e6] dark:border-gray-800 bg-surface-light dark:bg-surface-dark hover:shadow-md transition-all">
+                        <div class="h-48 w-full bg-cover bg-center" data-alt="Person trekking on a mountain trail" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBaMhZNFZUoIbCuxOzxq6RbdCe4pRaB2wf_7SGpaBIXXmNVMrXUUfFypbwXVW0bfK5MnmFk9Xz9uQPYloyTjeBM4VGAtqoHWtfccFDpw3czJPtTF4KvtS2yFRwLUBwA-mHlGhvFuzGsblxDQ0bG_pRsv3I-5ar8GV7DGx-Lghp-qYk1uGGsLdl0fp0ddzInx1_Jpp8oBjIV6zOor4_kgdfVTslJVYhoucC-JoANmMHGUL7fhJroepKNNa8eW-2Eg8oitSBPfTiiVxUl");'>
+                        </div>
+                        <div class="flex flex-1 flex-col p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="px-2 py-1 rounded-md bg-blue-100 dark:bg-blue-900/30 text-primary text-xs font-bold">Kinh nghiệm</span>
+                                <span class="text-text-secondary-light dark:text-text-secondary-dark text-xs">2 giờ trước</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-2 line-clamp-2 hover:text-primary cursor-pointer">
+                                Hành trình trekking Tà Năng - Phan Dũng: Những điều cần biết
+                            </h3>
+                            <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm line-clamp-3 mb-4">
+                                Một trong những cung đường trekking đẹp nhất Việt Nam với nhiều thử thách và cảnh quan hùng vĩ.
+                            </p>
+                            <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+                                <div class="flex items-center gap-2">
+                                    <div class="size-8 rounded-full bg-gray-200 bg-cover bg-center" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBvd2oCMgPTpafH6Dh61Q5fQLUgK0JKN4ngO0cTjq71vNgmWdj9yX2W_KeEMGsgw8NMJOzLGhwx94IF2zLPghSZowlS9ac8nbzTULum7T9wYro4pUXvFdN0dFwFFHUUEN1_OKHWseUfmzuJiCmtEShHTjluhz3k3APiofujacBagkAAjgOPDbeZJo1CVHkKz4oa4uwodejHwCmmXBQdjCr2i-IVbI43wpNIk-BbrjBH3kB59v5hwVYy2MCUrg3r7lBKyuwZg1DiFC7x")'></div>
+                                    <span class="text-sm font-medium">Minh Tuấn</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-text-secondary-light dark:text-text-secondary-dark text-xs">
+                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">visibility</span> 1.2k</span>
+                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">chat_bubble</span> 24</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <!-- Article 2 -->
+                    <article class="flex flex-col overflow-hidden rounded-xl border border-[#dbe0e6] dark:border-gray-800 bg-surface-light dark:bg-surface-dark hover:shadow-md transition-all">
+                        <div class="h-48 w-full bg-cover bg-center" data-alt="Delicious bowl of Pho noodles" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBBbJFuQAieXPaWbvVtA0qDGk68c5UT_bBESewaFC0jLctoHcIJO33DsQ3UJAck7Mx-A61eXXKboJ-YO75hiFPq4O-x74f7D86Wv0K7R3xQ1vnrEPeZ52BJV97cVxieo3tN5pqfQrhXVaxumX_-fB2GNkinA70tdUWF_ec5Y5FUCWj67rG0WJwbEWP8gVTXkh_QBehvCXuDUaR9X95w-zH4rJ4IJ2klfIbKKlajrCeDKMa9PCAL51oy2-w2ME2oQBagIKB80D_oSgex");'>
+                        </div>
+                        <div class="flex flex-1 flex-col p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold">Ẩm thực</span>
+                                <span class="text-text-secondary-light dark:text-text-secondary-dark text-xs">1 ngày trước</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-2 line-clamp-2 hover:text-primary cursor-pointer">
+                                Top 10 quán Phở ngon nức tiếng tại Hà Nội bạn không thể bỏ qua
+                            </h3>
+                            <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm line-clamp-3 mb-4">
+                                Khám phá hương vị ẩm thực truyền thống với danh sách những quán phở lâu đời nhất thủ đô.
+                            </p>
+                            <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+                                <div class="flex items-center gap-2">
+                                    <div class="size-8 rounded-full bg-gray-200 bg-cover bg-center" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCxsLVTerky8voclP4jLams4eUwsfW3LWCyJogrqQdIsPhsUaEIfFEawald5xnOLY52IENVi7T0qcTjOBVgorc948mgBzhCrPhWqCg7aPOrFQgxaGDVTrgOEaE2SVVbXRyYXWoZABN0s3sRs4C2JfrDjGz_v0SVBeuqU8UMrTM9My0nFkzrhz6ikE1LiNeHrLJaSz7DkB57lTwnBCkEbdM_s1i9FaQv1NygD1rXbpfywaGO4bI9Z2P9-1WX2eOM-HEmF_wS8pUDO9IC")'></div>
+                                    <span class="text-sm font-medium">Lan Anh</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-text-secondary-light dark:text-text-secondary-dark text-xs">
+                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">visibility</span> 850</span>
+                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">chat_bubble</span> 12</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <!-- Article 3 -->
+                    <article class="flex flex-col overflow-hidden rounded-xl border border-[#dbe0e6] dark:border-gray-800 bg-surface-light dark:bg-surface-dark hover:shadow-md transition-all">
+                        <div class="h-48 w-full bg-cover bg-center" data-alt="Solo traveler looking at a map in a city" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBlRU6inZaR_Xi5DufNea-I4RDMfgJ90T_UhD6ObRcP_G4eMZFKwZd7Skz5iozYhUqm0o49xYukTwwUEExS7qJuAqsU3WdfFoprJUOnmzUpFoNOXoekBanNBkI07MZJ0PU-O0sU43D1i5u7ZbHA-IuIespTcqO5YWbMun7Mq2JznH8jOZAvbHOpzWRKqddjiJhQ3K--e-FSujoxFtoBHGb7IMuZ6B0KxLhJFKGe315v0DmEn4EodTNRI3lUhdZxt3bV1Kxv7zgd0wcD");'>
+                        </div>
+                        <div class="flex flex-1 flex-col p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="px-2 py-1 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-xs font-bold">Mẹo vặt</span>
+                                <span class="text-text-secondary-light dark:text-text-secondary-dark text-xs">3 ngày trước</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-2 line-clamp-2 hover:text-primary cursor-pointer">
+                                Bí quyết du lịch một mình an toàn và tiết kiệm cho người mới
+                            </h3>
+                            <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm line-clamp-3 mb-4">
+                                Những kinh nghiệm xương máu giúp bạn tự tin xách ba lô lên và đi mà không cần chờ đợi ai.
+                            </p>
+                            <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+                                <div class="flex items-center gap-2">
+                                    <div class="size-8 rounded-full bg-gray-200 bg-cover bg-center" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBdpw5mo48lrZnaWDwwTcFlxpyRyOB-ec8LSTK7GvfNih2ZCrrpPoZH41jEwMdiqCtkGBREuh0RNy9QRUcxyszfs_KxWA6AhHlPzaKbnvvbbTlqog4fSX1qnDeTmoac0C2fwfDO6X_gAHDcDKhHGeHx4tLCCYRZjobijGsnuzNDzHV0gVpk_pqqyJQqKdbEvutXSWUl_jaRpw47qpv6wmlUbDNIKZlYkfipGvlNHpC8UBbWelogLdAhjo-E36Jodyf6kxMH2yNCfG6s")'></div>
+                                    <span class="text-sm font-medium">Hoàng Nam</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-text-secondary-light dark:text-text-secondary-dark text-xs">
+                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">visibility</span> 2.5k</span>
+                                    <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">chat_bubble</span> 56</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-surface-light dark:bg-surface-dark border-t border-gray-200 dark:border-gray-800 py-12 px-10">
+        <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-2 text-text-main-light dark:text-text-main-dark">
+                    <div class="size-6 text-primary">
+                        <span class="material-symbols-outlined">travel_explore</span>
+                    </div>
+                    <h2 class="text-lg font-bold">TravelApp</h2>
+                </div>
+                <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">
+                    Nền tảng chia sẻ kinh nghiệm du lịch hàng đầu. Khám phá thế giới theo cách của bạn.
+                </p>
+                <div class="flex gap-4">
+                    <a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary" href="#"><span class="material-symbols-outlined">public</span></a>
+                    <a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary" href="#"><span class="material-symbols-outlined">mail</span></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold text-text-main-light dark:text-text-main-dark mb-4">Khám phá</h4>
+                <ul class="flex flex-col gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                    <li><a class="hover:text-primary" href="#">Địa điểm hot</a></li>
+                    <li><a class="hover:text-primary" href="#">Bài viết mới</a></li>
+                    <li><a class="hover:text-primary" href="#">Bản đồ du lịch</a></li>
+                    <li><a class="hover:text-primary" href="#">Tìm kiếm</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-text-main-light dark:text-text-main-dark mb-4">Cộng đồng</h4>
+                <ul class="flex flex-col gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                    <li><a class="hover:text-primary" href="#">Quy tắc ứng xử</a></li>
+                    <li><a class="hover:text-primary" href="#">Trở thành cộng tác viên</a></li>
+                    <li><a class="hover:text-primary" href="#">Hỗ trợ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-text-main-light dark:text-text-main-dark mb-4">Đăng ký nhận tin</h4>
+                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-3">Nhận những ưu đãi và bài viết mới nhất.</p>
+                <div class="flex gap-2">
+                    <input class="flex-1 bg-background-light dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Email của bạn" type="email"/>
+                    <button class="bg-primary hover:bg-primary-hover text-white rounded-lg px-4 py-2 text-sm font-bold">Gửi</button>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-[1440px] mx-auto mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center text-sm text-text-secondary-light dark:text-text-secondary-dark">
+            © 2023 TravelApp. All rights reserved.
+        </div>
+    </footer>
+</div>
+</body></html>

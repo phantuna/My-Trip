@@ -4,6 +4,7 @@ package org.example.demo_datn.Controller;
 import lombok.RequiredArgsConstructor;
 import org.example.demo_datn.Dto.Request.Album.CreateAlbumRequest;
 import org.example.demo_datn.Dto.Request.Album.UpdateAlbumRequest;
+import org.example.demo_datn.Dto.Response.Album.AlbumResponse;
 import org.example.demo_datn.Entity.Album;
 import org.example.demo_datn.Service.AlbumService;
 import org.springframework.http.ResponseEntity;
@@ -19,22 +20,23 @@ public class AlbumController {
     private final AlbumService albumService;
 
     @PostMapping
-    public ResponseEntity<Album> create(@RequestBody CreateAlbumRequest request) {
+    public ResponseEntity<AlbumResponse> create(@RequestBody CreateAlbumRequest request) {
         return ResponseEntity.ok(albumService.createAlbum(request));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<List<Album>> myAlbums() {
+    public ResponseEntity<List<AlbumResponse>> myAlbums() {
+
         return ResponseEntity.ok(albumService.getMyAlbums());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Album> detail(@PathVariable String id) {
+    public ResponseEntity<AlbumResponse> detail(@PathVariable String id) {
         return ResponseEntity.ok(albumService.getAlbumDetail(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Album> update(
+    public ResponseEntity<AlbumResponse> update(
             @PathVariable String id,
             @RequestBody UpdateAlbumRequest request
     ) {

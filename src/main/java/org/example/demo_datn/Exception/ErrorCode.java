@@ -9,6 +9,8 @@ public enum ErrorCode {
 
     ALBUM_PRIVATE(2001, "Album is private"),
     LOCATION_NOT_FOUND(2002, "Location not found"),
+    PHOTO_NOT_FOUND(2003, "Photo not found"),
+
 
     JWT_NOT_CREATED(4000,"Cannot create JWT"),
     INVALID_SIGNATURE(4001,"Invalid signature"),
@@ -26,7 +28,9 @@ public enum ErrorCode {
     ALBUM_NOT_FOUND(5007,"Album not found"),
 
 
-
+    INVALID_STATUS(5008,"Invalid status"),
+    VIETMAP_API_FAILED(5009,"View VietMap API Failed"),
+    VIETMAP_RATE_LIMIT(5010,"Vietmap rate limit"),
     ;
 
 

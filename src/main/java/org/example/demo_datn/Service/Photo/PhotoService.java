@@ -3,7 +3,8 @@ package org.example.demo_datn.Service.Photo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.demo_datn.Dto.Enum.AlbumStatus;
-import org.example.demo_datn.Service.Cloudinary.CloudinaryService;
+import org.example.demo_datn.Dto.Response.Photo.PhotoResponse;
+import org.example.demo_datn.Service.API_tichhop.CloudService;
 import org.springframework.security.core.Authentication;
 import org.example.demo_datn.Entity.Album;
 import org.example.demo_datn.Entity.Photo;
@@ -20,8 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,68 +34,133 @@ public class PhotoService {
     private final AlbumRepository albumRepository;
     private final UserRepository userRepository;
     private final PermissionRepository permissionRepository;
-    private final CloudinaryService cloudinaryService;
+    private final CloudService cloudinaryService;
 
-    public Photo uploadPhoto(MultipartFile file, String albumId) throws IOException {
+    private PhotoResponse toResponse(Photo photo) {
+        return PhotoResponse.builder()
+                .id(photo.getId())
+                .imageUrl(photo.getImageUrl())
+                .width(photo.getWidth())
+                .height(photo.getHeight())
+                .size(photo.getSize())
+                .albumId(photo.getAlbum().getId())
+                .albumTitle(photo.getAlbum().getTitle())
+                .ownerId(photo.getOwner().getId())
+                .ownerUsername(photo.getOwner().getUsername())
+                .build();
+    }
+    /* ========================= UPLOAD ========================= */
 
-        if (file == null || file.isEmpty()) {
+    public List<PhotoResponse> uploadPhotos(List<MultipartFile> files, String albumId) {
+
+        if (files == null || files.isEmpty()) {
             throw new AppException(ErrorCode.FILE_EMPTY);
         }
 
-        if (!file.getContentType().startsWith("image/")) {
-            throw new AppException(ErrorCode.FILE_NOT_IMAGE);
+        User user = getCurrentUser();
+        Album album = getAlbumWithPermissionCheck(albumId, user);
+
+        List<PhotoResponse> responses = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            try {
+                if (file.isEmpty() || !file.getContentType().startsWith("image/")) {
+                    continue;
+                }
+
+                BufferedImage original = ImageIO.read(file.getInputStream());
+                if (original == null) continue;
+
+                BufferedImage resized = ImageUtil.resize(original, 1280);
+                byte[] compressed = ImageUtil.compressJpeg(resized, 0.6f);
+
+                String publicId = "photos/" + UUID.randomUUID();
+                String imageUrl = cloudinaryService.uploadImage(compressed, publicId);
+
+                Photo photo = new Photo();
+                photo.setAlbum(album);
+                photo.setOwner(user);
+                photo.setImageUrl(imageUrl);
+                photo.setWidth(resized.getWidth());
+                photo.setHeight(resized.getHeight());
+                photo.setSize(compressed.length);
+
+                Photo saved = photoRepository.save(photo);
+                responses.add(toResponse(saved));
+
+            } catch (Exception e) {
+                e.printStackTrace(); // không giết cả batch
+            }
         }
 
-        Authentication authentication = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
+        return responses;
+    }
 
-        User user = userRepository.findByUsername(authentication.getName())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    /* ========================= QUERY ========================= */
 
-        Album album = albumRepository.findById(albumId)
-                .orElseThrow(() -> new AppException(ErrorCode.ALBUM_NOT_FOUND));
+    public List<PhotoResponse> getPhotosByAlbum(String albumId) {
 
-        boolean isOwner = album.getOwner().getId().equals(user.getId());
-        boolean hasPermission = permissionRepository.existsByUserAndAlbum(user, album);
+        User user = getCurrentUser();
+        Album album = getAlbumWithPermissionCheck(albumId, user);
 
-        if (!isOwner && !hasPermission) {
+        List<Photo> photos = photoRepository.findByAlbum(album);
+        List<PhotoResponse> responses = new ArrayList<>();
+
+        for (Photo photo : photos) {
+            responses.add(toResponse(photo));
+        }
+
+        return responses;
+    }
+
+    /* ========================= MOVE ========================= */
+
+    public PhotoResponse movePhoto(String photoId, String newAlbumId) {
+
+        User user = getCurrentUser();
+
+        Photo photo = photoRepository.findById(photoId)
+                .orElseThrow(() -> new AppException(ErrorCode.PHOTO_NOT_FOUND));
+
+        if (!photo.getOwner().getId().equals(user.getId())) {
             throw new AppException(ErrorCode.ACCESS_DENIED);
         }
 
-        if (album.getStatus() == AlbumStatus.PRIVATE && !isOwner) {
-            throw new AppException(ErrorCode.ALBUM_PRIVATE);
-        }
+        Album newAlbum = albumRepository.findById(newAlbumId)
+                .orElseThrow(() -> new AppException(ErrorCode.ALBUM_NOT_FOUND));
 
-        BufferedImage originalImage = ImageIO.read(file.getInputStream());
-        if (originalImage == null) {
-            throw new AppException(ErrorCode.FILE_INVALID);
-        }
+        photo.setAlbum(newAlbum);
+        Photo saved = photoRepository.save(photo);
 
-        BufferedImage resizedImage = ImageUtil.resize(originalImage, 1280);
-        byte[] compressedBytes = ImageUtil.compressJpeg(resizedImage, 0.6f);
-
-        String imageUrl = cloudinaryService.uploadImage(
-                compressedBytes,
-                UUID.randomUUID().toString()
-        );
-
-        Photo photo = new Photo();
-        photo.setAlbum(album);
-        photo.setOwner(user);
-        photo.setImageUrl(imageUrl);
-        photo.setWidth(resizedImage.getWidth());
-        photo.setHeight(resizedImage.getHeight());
-        photo.setSize(compressedBytes.length);
-
-        return photoRepository.save(photo);
+        return toResponse(saved);
     }
 
-    public List<Photo> getPhotosByAlbum(String albumId) {
+    /* ========================= DELETE ========================= */
 
+    public void deletePhoto(String photoId) {
+
+        User user = getCurrentUser();
+
+        Photo photo = photoRepository.findById(photoId)
+                .orElseThrow(() -> new AppException(ErrorCode.PHOTO_NOT_FOUND));
+
+        if (!photo.getAlbum().getOwner().getId().equals(user.getId())) {
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
+
+        cloudinaryService.deleteImage(photo.getImageUrl());
+        photoRepository.delete(photo);
+    }
+
+    /* ========================= HELPERS ========================= */
+
+    private User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(auth.getName())
+        return userRepository.findByUsername(auth.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private Album getAlbumWithPermissionCheck(String albumId, User user) {
 
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new AppException(ErrorCode.ALBUM_NOT_FOUND));
@@ -107,53 +172,8 @@ public class PhotoService {
             throw new AppException(ErrorCode.ACCESS_DENIED);
         }
 
-        return photoRepository.findByAlbum(album);
+        return album;
     }
-
-    public Photo movePhoto(String photoId, String newAlbumId) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(auth.getName())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
-        Photo photo = photoRepository.findById(photoId)
-                .orElseThrow(() -> new AppException(ErrorCode.PHOTO_NOT_FOUND));
-
-        Album newAlbum = albumRepository.findById(newAlbumId)
-                .orElseThrow(() -> new AppException(ErrorCode.ALBUM_NOT_FOUND));
-
-        if (!photo.getOwner().getId().equals(user.getId())) {
-            throw new AppException(ErrorCode.ACCESS_DENIED);
-        }
-
-        photo.setAlbum(newAlbum);
-        return photoRepository.save(photo);
-    }
-
-
-    public void deletePhoto(String photoId) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(auth.getName())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
-        Photo photo = photoRepository.findById(photoId)
-                .orElseThrow(() -> new AppException(ErrorCode.PHOTO_NOT_FOUND));
-
-        Album album = photo.getAlbum();
-
-        boolean isOwner = album.getOwner().getId().equals(user.getId());
-
-        if (!isOwner) {
-            throw new AppException(ErrorCode.ACCESS_DENIED);
-        }
-
-        // xóa trên Cloudinary
-        cloudinaryService.deleteImage(photo.getImageUrl());
-
-        photoRepository.delete(photo);
-    }
-
 
 
 }
