@@ -7,7 +7,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.demo_datn.Dto.Enum.AlbumStatus;
+import org.example.demo_datn.Enum.AlbumStatus;
 
 @Entity
 @Data

@@ -1,4 +1,4 @@
-package org.example.demo_datn.Dto.Enum;
+package org.example.demo_datn.Enum;
 
 public enum AlbumStatus {
     PUBLIC,

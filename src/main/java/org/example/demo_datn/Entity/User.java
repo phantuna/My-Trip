@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.demo_datn.Dto.Enum.StatusUser;
+import org.example.demo_datn.Enum.StatusUser;
 
 import java.util.ArrayList;
 import java.util.List;

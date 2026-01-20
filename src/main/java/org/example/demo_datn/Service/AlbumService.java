@@ -1,7 +1,7 @@
 package org.example.demo_datn.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.demo_datn.Dto.Enum.AlbumStatus;
+import org.example.demo_datn.Enum.AlbumStatus;
 import org.example.demo_datn.Dto.Request.Album.CreateAlbumRequest;
 import org.example.demo_datn.Dto.Request.Album.UpdateAlbumRequest;
 import org.example.demo_datn.Dto.Response.Album.AlbumResponse;
@@ -29,15 +29,29 @@ public class AlbumService
     private final PhotoRepository photoRepository;
 
 
+    private AlbumResponse toResponse(Album album) {
+        return AlbumResponse.builder()
+                .id(album.getId())
+                .title(album.getTitle())
+                .description(album.getDescription())
+                .status(album.getStatus())
+                .locationId(album.getLocation() != null ? album.getLocation().getId() : null)
+                .locationName(album.getLocation() != null ? album.getLocation().getName() : null)
+                .ownerId(album.getOwner() != null ? album.getOwner().getId() : null)
+                .ownerUsername(album.getOwner() != null ? album.getOwner().getUsername() : null)
+                .build();
+    }
+
+    private User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByUsername(auth.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
+
     public AlbumResponse createAlbum(CreateAlbumRequest request) {
 
         // 1. Lấy user hiện tại
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
+        User username = getCurrentUser();
         // 2. Lấy location
         Locations location = locationRepository.findById(request.getLocationId())
                 .orElseThrow(() -> new AppException(ErrorCode.LOCATION_NOT_FOUND));
@@ -48,7 +62,7 @@ public class AlbumService
         album.setTitle(request.getTitle());
         album.setDescription(request.getDescription());
         album.setLocation(location);
-        album.setOwner(user);
+        album.setOwner(username);
         album.setStatus(
                 request.getStatus() != null
                         ? request.getStatus()
@@ -56,23 +70,15 @@ public class AlbumService
         );
 
         Album saved = albumRepository.save(album);
-         return AlbumResponse.builder()
-                 .id(saved.getId())
-                 .title(saved.getTitle())
-                 .description(saved.getDescription())
-                 .locationName(saved.getLocation().getName())
-                 .ownerUsername(saved.getOwner().getUsername())
+        return toResponse(saved);
 
-                 .build();
     }
 
     public List<AlbumResponse> getMyAlbums() {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(auth.getName())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        User username = getCurrentUser();
 
-        List<Album> albums = albumRepository.findByOwner(user);
+        List<Album> albums = albumRepository.findByOwner(username);
 
         List<AlbumResponse> responses = new ArrayList<>();
         for (Album album : albums) {
@@ -95,40 +101,28 @@ public class AlbumService
 
     public AlbumResponse getAlbumDetail(String albumId) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(auth.getName())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
+        User username = getCurrentUser();
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new AppException(ErrorCode.ALBUM_NOT_FOUND));
 
-        boolean isOwner = album.getOwner().getId().equals(user.getId());
-        boolean hasPermission = permissionRepository.existsByUserAndAlbum(user, album);
+        boolean isOwner = album.getOwner().getId().equals(username.getId());
+        boolean hasPermission = permissionRepository.existsByUserAndAlbum(username, album);
 
         if (album.getStatus() == AlbumStatus.PRIVATE && !isOwner && !hasPermission) {
             throw new AppException(ErrorCode.ACCESS_DENIED);
         }
 
-        return AlbumResponse.builder()
-                .id(album.getId())
-                .title(album.getTitle())
-                .description(album.getDescription())
-                .status(album.getStatus())
-                .locationName(album.getLocation().getName())
-                .ownerUsername(album.getOwner().getUsername())
-                .build();
+        return toResponse(albumRepository.save(album));
+
     }
 
     public AlbumResponse updateAlbum(String albumId, UpdateAlbumRequest request) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(auth.getName())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
+        User username = getCurrentUser();
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new AppException(ErrorCode.ALBUM_NOT_FOUND));
 
-        if (!album.getOwner().getId().equals(user.getId())) {
+        if (!album.getOwner().getId().equals(username.getId())) {
             throw new AppException(ErrorCode.ACCESS_DENIED);
         }
 
@@ -138,27 +132,18 @@ public class AlbumService
 
         Album saved = albumRepository.save(album);
 
-        return AlbumResponse.builder()
-                .id(saved.getId())
-                .title(saved.getTitle())
-                .description(saved.getDescription())
-                .status(saved.getStatus())
-                .locationName(saved.getLocation().getName())
-                .ownerUsername(saved.getOwner().getUsername())
-                .build();
+        return toResponse(albumRepository.save(album));
+
     }
 
 
     public void deleteAlbum(String albumId) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(auth.getName())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
+        User username = getCurrentUser();
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new AppException(ErrorCode.ALBUM_NOT_FOUND));
 
-        if (!album.getOwner().getId().equals(user.getId())) {
+        if (!album.getOwner().getId().equals(username.getId())) {
             throw new AppException(ErrorCode.ACCESS_DENIED);
         }
 
@@ -177,27 +162,57 @@ public class AlbumService
         albumRepository.delete(album);
     }
 
-        private AlbumResponse getAlbumWithPermissionCheck(String albumId, User user) {
+    private AlbumResponse getAlbumWithPermissionCheck(String albumId, User user) {
 
-            Album album = albumRepository.findById(albumId)
-                    .orElseThrow(() -> new AppException(ErrorCode.ALBUM_NOT_FOUND));
+        Album album = albumRepository.findById(albumId)
+                .orElseThrow(() -> new AppException(ErrorCode.ALBUM_NOT_FOUND));
 
-            boolean isOwner = album.getOwner().getId().equals(user.getId());
-            boolean hasPermission = permissionRepository.existsByUserAndAlbum(user, album);
+        boolean isOwner = album.getOwner().getId().equals(user.getId());
+        boolean hasPermission = permissionRepository.existsByUserAndAlbum(user, album);
 
-            if (album.getStatus() == AlbumStatus.PRIVATE && !isOwner && !hasPermission) {
-                throw new AppException(ErrorCode.ACCESS_DENIED);
-            }
-
-            Album saved = albumRepository.save(album) ;
-
-            return AlbumResponse.builder()
-                    .id(saved.getId())
-                    .title(saved.getTitle())
-                    .description(saved.getDescription())
-                    .status(saved.getStatus())
-                    .locationName(saved.getLocation().getName())
-                    .ownerUsername(saved.getOwner().getUsername())
-                    .build();
+        if (album.getStatus() == AlbumStatus.PRIVATE && !isOwner && !hasPermission) {
+            throw new AppException(ErrorCode.ACCESS_DENIED);
         }
+
+        Album saved = albumRepository.save(album) ;
+
+        return toResponse(saved);
+
+    }
+
+
+    public List<AlbumResponse> searchByTitle(String keyword) {
+        return albumRepository
+                .findByStatusAndTitleContainingIgnoreCase(
+                        AlbumStatus.PUBLIC, // hoặc APPROVAL
+                        keyword
+                )
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public List<AlbumResponse> searchByLocation(String locationName) {
+        return albumRepository
+                .searchByLocationName( locationName)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+    public List<AlbumResponse> findNearby(Double lat, Double lng) {
+        double delta = 0.01;
+
+        return albumRepository
+                .findNearby(
+                        AlbumStatus.PUBLIC,
+                        lat - delta,
+                        lat + delta,
+                        lng - delta,
+                        lng + delta
+                )
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
 }

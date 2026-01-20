@@ -2,7 +2,7 @@ package org.example.demo_datn.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.demo_datn.Dto.Enum.LocationStatus;
+import org.example.demo_datn.Enum.LocationStatus;
 import org.example.demo_datn.Dto.Request.LocationRequest;
 import org.example.demo_datn.Dto.Response.LocationResponse;
 import org.example.demo_datn.Entity.Locations;
@@ -25,13 +25,33 @@ public class LocationService {
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
 
-    public LocationResponse create(LocationRequest dto) {
+    private LocationResponse mapToResponse(Locations location) {
+        return LocationResponse.builder()
+                .id(location.getId())
+                .name(location.getName())
+                .address(location.getAddress())
+                .latitude(location.getLatitude())
+                .longitude(location.getLongitude())
+                .description(location.getDescription())
+                .build();
+    }
 
+    private User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-
-        User user = userRepository.findByUsername(username)
+        return userRepository.findByUsername(auth.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
+    public LocationResponse create(LocationRequest dto) {
+        Locations duplicate = findDuplicateLocation(
+                dto.getLatitude(),
+                dto.getLongitude()
+        );
+
+        if (duplicate != null) {
+            // Không tạo mới nữa
+            return mapToResponse(duplicate);
+        }
+        String username = getCurrentUser().getUsername();
 
         Locations location = new Locations();
         location.setName(dto.getName());
@@ -45,7 +65,7 @@ public class LocationService {
 
         // === AUTO APPROVE CHECK ===
         if (isAutoApproved(dto)) {
-            location.setStatus(LocationStatus.AUTO_APPROVED);
+            location.setStatus(LocationStatus.APPROVAL);
         }
 
         locationRepository.save(location);
@@ -62,6 +82,7 @@ public class LocationService {
     }
 
     public List<LocationResponse> getAll() {
+
         return locationRepository.findAll()
                 .stream()
                 .map(this::mapToResponse)
@@ -92,16 +113,6 @@ public class LocationService {
         return mapToResponse(location);
     }
 
-    private LocationResponse mapToResponse(Locations location) {
-        return LocationResponse.builder()
-                .id(location.getId())
-                .name(location.getName())
-                .address(location.getAddress())
-                .latitude(location.getLatitude())
-                .longitude(location.getLongitude())
-                .description(location.getDescription())
-                .build();
-    }
 
     private boolean isAutoApproved(LocationRequest dto) {
 
@@ -111,7 +122,7 @@ public class LocationService {
         }
 
         // Rule 2: gần địa điểm đã được duyệt
-        double MAX_DISTANCE_KM = 2.0;
+        double MAX_DISTANCE_KM = 1.0;
 
         List<Locations> approvedLocations =
                 locationRepository.findByStatus(LocationStatus.APPROVAL);
@@ -148,6 +159,21 @@ public class LocationService {
         return R * c;
     }
 
+    private Locations findDuplicateLocation(double lat, double lon) {
+
+        double DUP_RADIUS_KM = 0.1; // 100m
+
+        List<Locations> approved =
+                locationRepository.findByStatus(LocationStatus.APPROVAL);
+
+        for (Locations loc : approved) {
+            double d = distanceKm(lat, lon, loc.getLatitude(), loc.getLongitude());
+            if (d <= DUP_RADIUS_KM) {
+                return loc;
+            }
+        }
+        return null;
+    }
 
 }
 

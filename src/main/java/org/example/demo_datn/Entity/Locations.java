@@ -3,11 +3,10 @@ package org.example.demo_datn.Entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.demo_datn.Dto.Enum.LocationStatus;
+import org.example.demo_datn.Enum.LocationStatus;
 
 @Entity
 @AllArgsConstructor
@@ -22,7 +21,5 @@ public class Locations extends Base{
 
     @Enumerated(EnumType.STRING)
     private LocationStatus status;
-    @ManyToOne
-    private User created_by;
 
 }

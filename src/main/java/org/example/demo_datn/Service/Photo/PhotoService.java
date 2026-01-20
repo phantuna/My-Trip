@@ -2,7 +2,7 @@ package org.example.demo_datn.Service.Photo;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.demo_datn.Dto.Enum.AlbumStatus;
+import org.example.demo_datn.Enum.AlbumStatus;
 import org.example.demo_datn.Dto.Response.Photo.PhotoResponse;
 import org.example.demo_datn.Service.API_tichhop.CloudService;
 import org.springframework.security.core.Authentication;
