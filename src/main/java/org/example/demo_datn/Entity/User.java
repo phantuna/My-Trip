@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.example.demo_datn.Enum.StatusUser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -21,6 +22,7 @@ public class User extends Base {
     private String email;
     @Enumerated(EnumType.STRING)
     private StatusUser status;
+    private Date birthday;
 
     @ManyToMany(cascade = {
             CascadeType.MERGE

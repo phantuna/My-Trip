@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.demo_datn.Dto.Request.Album.CreateAlbumRequest;
 import org.example.demo_datn.Dto.Request.Album.UpdateAlbumRequest;
 import org.example.demo_datn.Dto.Response.Album.AlbumResponse;
-import org.example.demo_datn.Service.AlbumService;
+import org.example.demo_datn.service.album.AlbumService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

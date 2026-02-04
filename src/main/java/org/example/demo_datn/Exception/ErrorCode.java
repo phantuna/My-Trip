@@ -7,9 +7,9 @@ public enum ErrorCode {
 
 
 
-    ALBUM_PRIVATE(2001, "Album is private"),
+    ALBUM_PRIVATE(2001, "album is private"),
     LOCATION_NOT_FOUND(2002, "Location not found"),
-    PHOTO_NOT_FOUND(2003, "Photo not found"),
+    PHOTO_NOT_FOUND(2003, "photo not found"),
 
 
     JWT_NOT_CREATED(4000,"Cannot create JWT"),
@@ -25,7 +25,7 @@ public enum ErrorCode {
     PERMISSION_NOT_FOUND(5004,"Permission not found"),
     USER_ROLE_NOT_FOUND ( 5005,"User role not found"),
     USER_NOT_FOUND(5006,"User not found"),
-    ALBUM_NOT_FOUND(5007,"Album not found"),
+    ALBUM_NOT_FOUND(5007,"album not found"),
 
 
     INVALID_STATUS(5008,"Invalid status"),

@@ -2,13 +2,11 @@ package org.example.demo_datn.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.demo_datn.Dto.Response.Photo.PhotoResponse;
-import org.example.demo_datn.Entity.Photo;
-import org.example.demo_datn.Service.Photo.PhotoService;
+import org.example.demo_datn.service.Photo.PhotoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,10 +25,15 @@ public class PhotoController {
     }
 
 
-    @GetMapping("/album/{albumId}")
-    public ResponseEntity<List<PhotoResponse>> getByAlbum(@PathVariable String albumId) {
-        return ResponseEntity.ok(photoService.getPhotosByAlbum(albumId));
-    }
+//    @GetMapping("/album/{albumId}")
+//    public ResponseEntity<List<PhotoResponse>> getByAlbum(@PathVariable String albumId) {
+//        return ResponseEntity.ok(photoService.getPhotosEntityByAlbum(albumId));
+//    }
+        @GetMapping("/album/{albumId}")
+        public ResponseEntity<List<PhotoResponse>> getByAlbum(@PathVariable String albumId) {
+            return ResponseEntity.ok(photoService.getPhotoFeedByAlbum(albumId));
+        }
+
 
 
     @DeleteMapping("/{photoId}")

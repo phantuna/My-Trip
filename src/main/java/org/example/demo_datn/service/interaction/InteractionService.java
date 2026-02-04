@@ -1,4 +1,4 @@
-package org.example.demo_datn.Service;
+package org.example.demo_datn.service.interaction;
 
 
 import jakarta.transaction.Transactional;
@@ -7,11 +7,18 @@ import org.example.demo_datn.Entity.Interaction;
 import org.example.demo_datn.Entity.User;
 import org.example.demo_datn.Enum.InteractionType;
 import org.example.demo_datn.Enum.TargetType;
+import org.example.demo_datn.Exception.AppException;
+import org.example.demo_datn.Exception.ErrorCode;
 import org.example.demo_datn.Repository.InteractionRepository;
+import org.example.demo_datn.Repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,26 +27,32 @@ import java.util.stream.Collectors;
 public class InteractionService {
 
     private final InteractionRepository interactionRepository;
+    private final UserRepository userRepository;
 
+    private User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByUsername(auth.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
     // =========================
     // LIKE / UNLIKE
     // =========================
     public void likeOrUnlike(
-            User user,
             TargetType targetType,
             String targetId
     ) {
-        toggle(user, InteractionType.LIKE, targetType, targetId);
+        toggle( InteractionType.LIKE, targetType, targetId);
     }
 
     // =========================
     // SAVE
     // =========================
     public void save(
-            User user,
             TargetType targetType,
             String targetId
     ) {
+        User user = getCurrentUser();
+
         boolean exists = interactionRepository
                 .existsByUserAndTypeAndTargetTypeAndTargetId(
                         user, InteractionType.SAVE, targetType, targetId
@@ -60,10 +73,10 @@ public class InteractionService {
     // UNSAVE
     // =========================
     public void unsave(
-            User user,
             TargetType targetType,
             String targetId
     ) {
+        User user = getCurrentUser();
         interactionRepository
                 .deleteByUserAndTypeAndTargetTypeAndTargetId(
                         user, InteractionType.SAVE, targetType, targetId
@@ -74,10 +87,11 @@ public class InteractionService {
     // VIEW (raw view)
     // =========================
     public void createView(
-            User user,
             TargetType targetType,
             String targetId
     ) {
+        User user = getCurrentUser();
+
         Interaction interaction = new Interaction();
         interaction.setUser(user);
         interaction.setType(InteractionType.VIEW);
@@ -110,11 +124,12 @@ public class InteractionService {
     // =========================
     @Transactional(Transactional.TxType.SUPPORTS)
     public boolean hasInteracted(
-            User user,
             InteractionType type,
             TargetType targetType,
             String targetId
     ) {
+        User user = getCurrentUser();
+
         return interactionRepository
                 .existsByUserAndTypeAndTargetTypeAndTargetId(
                         user, type, targetType, targetId
@@ -125,11 +140,12 @@ public class InteractionService {
     // PRIVATE TOGGLE
     // =========================
     private void toggle(
-            User user,
             InteractionType type,
             TargetType targetType,
             String targetId
     ) {
+        User user = getCurrentUser();
+
         boolean exists = interactionRepository
                 .existsByUserAndTypeAndTargetTypeAndTargetId(
                         user, type, targetType, targetId
@@ -150,4 +166,21 @@ public class InteractionService {
             interactionRepository.save(interaction);
         }
     }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public Set<String> getUserInteractedTargetIds(
+            InteractionType type,
+            TargetType targetType,
+            List<String> targetIds
+    ) {
+        User user = getCurrentUser();
+
+        return new HashSet<>(
+                interactionRepository.findTargetIdsUserInteracted(
+                        user, type, targetType, targetIds
+                )
+        );
+    }
+
+
 }

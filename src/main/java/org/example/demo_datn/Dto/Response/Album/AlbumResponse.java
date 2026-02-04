@@ -31,4 +31,9 @@ public class AlbumResponse {
     private String ownerId;
     private String ownerUsername;
 
+    private long likeCount;
+    private long viewCount;
+
+    private boolean liked;
+    private boolean saved;
 }

@@ -1,10 +1,10 @@
-package org.example.demo_datn.Service.Photo;
+package org.example.demo_datn.service.Photo;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.demo_datn.Enum.AlbumStatus;
 import org.example.demo_datn.Dto.Response.Photo.PhotoResponse;
-import org.example.demo_datn.Service.API_tichhop.CloudService;
+import org.example.demo_datn.service.api_tichhop.CloudService;
 import org.springframework.security.core.Authentication;
 import org.example.demo_datn.Entity.Album;
 import org.example.demo_datn.Entity.Photo;
@@ -35,6 +35,7 @@ public class PhotoService {
     private final UserRepository userRepository;
     private final PermissionRepository permissionRepository;
     private final CloudService cloudinaryService;
+    private final PhotoFeedService photoFeedService;
 
     private PhotoResponse toResponse(Photo photo) {
         return PhotoResponse.builder()
@@ -49,8 +50,14 @@ public class PhotoService {
                 .ownerUsername(photo.getOwner().getUsername())
                 .build();
     }
-    /* ========================= UPLOAD ========================= */
 
+    private User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        assert auth != null;
+        return userRepository.findByUsername(auth.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
+    /* ========================= UPLOAD ========================= */
     public List<PhotoResponse> uploadPhotos(List<MultipartFile> files, String albumId) {
 
         if (files == null || files.isEmpty()) {
@@ -96,21 +103,32 @@ public class PhotoService {
         return responses;
     }
 
+
     /* ========================= QUERY ========================= */
 
-    public List<PhotoResponse> getPhotosByAlbum(String albumId) {
+//    public List<PhotoResponse> getPhotosEntityByAlbum(String albumId) {
+//
+//        User user = getCurrentUser();
+//        album album = getAlbumWithPermissionCheck(albumId, user);
+//
+//        List<Photo> photos = photoRepository.findByAlbum(album);
+//        List<PhotoResponse> responses = new ArrayList<>();
+//
+//        for (Photo photo : photos) {
+//            responses.add(toResponse(photo));
+//        }
+//
+//        return responses;
+//    }
+
+    public List<PhotoResponse> getPhotoFeedByAlbum(String albumId) {
 
         User user = getCurrentUser();
         Album album = getAlbumWithPermissionCheck(albumId, user);
 
         List<Photo> photos = photoRepository.findByAlbum(album);
-        List<PhotoResponse> responses = new ArrayList<>();
 
-        for (Photo photo : photos) {
-            responses.add(toResponse(photo));
-        }
-
-        return responses;
+        return photoFeedService.buildFeed(photos, user);
     }
 
     /* ========================= MOVE ========================= */
@@ -154,11 +172,7 @@ public class PhotoService {
 
     /* ========================= HELPERS ========================= */
 
-    private User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userRepository.findByUsername(auth.getName())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-    }
+
 
     private Album getAlbumWithPermissionCheck(String albumId, User user) {
 

@@ -1,4 +1,4 @@
-package org.example.demo_datn.Service.API_tichhop;
+package org.example.demo_datn.service.api_tichhop;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -30,26 +30,21 @@ public class CloudService {
             throw new RuntimeException("Upload to Cloudinary failed", e);
         }
     }
+
     public static String extractPublicId(String imageUrl) {
         try {
             String path = URI.create(imageUrl).getPath();
-            // path ví dụ: /dlouzb28c/image/upload/v1767864436/photos/xxx.jpg
 
             String marker = "/upload/";
             int idx = path.indexOf(marker);
             if (idx < 0) throw new IllegalArgumentException("Invalid Cloudinary URL");
 
             String afterUpload = path.substring(idx + marker.length());
-            // afterUpload: v1767864436/photos/xxx.jpg
-
-            // bỏ "v123456/" nếu có
             if (afterUpload.startsWith("v")) {
                 int slash = afterUpload.indexOf('/');
                 if (slash > 0) afterUpload = afterUpload.substring(slash + 1);
-                // afterUpload: photos/xxx.jpg
             }
 
-            // bỏ extension
             int dot = afterUpload.lastIndexOf('.');
             if (dot > 0) afterUpload = afterUpload.substring(0, dot);
 

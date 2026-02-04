@@ -24,9 +24,8 @@ public interface AlbumRepository extends JpaRepository<Album, String> {
     JOIN a.location l
     WHERE LOWER(l.name) LIKE LOWER(CONCAT('%', :locationName, '%'))
     """)
-    List<Album> searchByLocationName(
-            String locationName
-    );
+    List<Album> searchByLocationName(String locationName);
+
     @Query("""
     SELECT a FROM Album a
     JOIN a.location l
@@ -34,13 +33,6 @@ public interface AlbumRepository extends JpaRepository<Album, String> {
     AND l.latitude BETWEEN :latMin AND :latMax
     AND l.longitude BETWEEN :lngMin AND :lngMax
     """)
-    List<Album> findNearby(
-            AlbumStatus status,
-            Double latMin,
-            Double latMax,
-            Double lngMin,
-            Double lngMax
-    );
-
+    List<Album> findNearby(AlbumStatus status, Double latMin, Double latMax, Double lngMin, Double lngMax);
 
 }

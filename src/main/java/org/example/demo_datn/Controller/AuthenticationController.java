@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.demo_datn.Dto.Request.AuthenticationRequest;
 import org.example.demo_datn.Dto.Response.ApiResponse;
 import org.example.demo_datn.Dto.Response.AuthenticationResponse;
-import org.example.demo_datn.Service.AuthenticationService;
+import org.example.demo_datn.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

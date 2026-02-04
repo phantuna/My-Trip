@@ -1,4 +1,4 @@
-package org.example.demo_datn.Service;
+package org.example.demo_datn.service.album;
 
 import lombok.RequiredArgsConstructor;
 import org.example.demo_datn.Enum.AlbumStatus;
@@ -9,12 +9,11 @@ import org.example.demo_datn.Entity.*;
 import org.example.demo_datn.Exception.AppException;
 import org.example.demo_datn.Exception.ErrorCode;
 import org.example.demo_datn.Repository.*;
-import org.example.demo_datn.Service.API_tichhop.CloudService;
+import org.example.demo_datn.service.api_tichhop.CloudService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,6 +26,7 @@ public class AlbumService
     private final LocationRepository locationRepository;
     private final CloudService cloudinaryService;
     private final PhotoRepository photoRepository;
+    private final AlbumFeedService albumFeedService;
 
 
     private AlbumResponse toResponse(Album album) {
@@ -44,6 +44,7 @@ public class AlbumService
 
     private User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        assert auth != null;
         return userRepository.findByUsername(auth.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
@@ -75,28 +76,10 @@ public class AlbumService
     }
 
     public List<AlbumResponse> getMyAlbums() {
+        User user = getCurrentUser();
+        List<Album> albums = albumRepository.findByOwner(user);
 
-        User username = getCurrentUser();
-
-        List<Album> albums = albumRepository.findByOwner(username);
-
-        List<AlbumResponse> responses = new ArrayList<>();
-        for (Album album : albums) {
-            AlbumResponse res = AlbumResponse.builder()
-                    .id(album.getId())
-                    .title(album.getTitle())
-                    .description(album.getDescription())
-                    .status(album.getStatus())
-                    .locationId(album.getLocation() != null ? album.getLocation().getId() : null)
-                    .locationName(album.getLocation() != null ? album.getLocation().getName() : null)
-                    .ownerId(album.getOwner() != null ? album.getOwner().getId() : null)
-                    .ownerUsername(album.getOwner() != null ? album.getOwner().getUsername() : null)
-                    .build();
-
-            responses.add(res);
-        }
-
-        return responses;
+        return albumFeedService.buildFeed(albums);
     }
 
     public AlbumResponse getAlbumDetail(String albumId) {
@@ -129,8 +112,6 @@ public class AlbumService
         album.setTitle(request.getTitle());
         album.setDescription(request.getDescription());
         album.setStatus(request.getStatus());
-
-        Album saved = albumRepository.save(album);
 
         return toResponse(albumRepository.save(album));
 

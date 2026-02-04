@@ -28,4 +28,5 @@ public class PhotoResponse {
     private long viewCount;
 
     private boolean liked;
+    private boolean saved;
 }

@@ -14,4 +14,8 @@ public class LocationRequest {
     private Double latitude;
     private Double longitude;
     private String description;
+    private Double bestTimeStart;
+    private Double bestTimeEnd;
+    private String recommendedLens;
+    private String viewDirection;
 }

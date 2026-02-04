@@ -1,45 +1,46 @@
 package org.example.demo_datn.Controller.interaction;
-import lombok.AllArgsConstructor;
-import org.example.demo_datn.Entity.User;
+
+import lombok.RequiredArgsConstructor;
 import org.example.demo_datn.Enum.TargetType;
-import org.example.demo_datn.Service.InteractionService;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.example.demo_datn.service.interaction.InteractionService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
+@RequestMapping("/api/photos")
 public class PhotoInteractionController {
+
     private final InteractionService interactionService;
 
-    @PostMapping("/photos/{id}/like")
+    // LIKE / UNLIKE
+    @PostMapping("/{id}/like")
     public void likePhoto(
-            @PathVariable String id,
-            @AuthenticationPrincipal User user
+            @PathVariable String id
     ) {
-        interactionService.likeOrUnlike(user, TargetType.PHOTO, id);
+        interactionService.likeOrUnlike( TargetType.PHOTO, id);
     }
 
-    @PostMapping("/photos/{id}/save")
+    // SAVE
+    @PostMapping("/{id}/save")
     public void savePhoto(
-            @PathVariable String id,
-            @AuthenticationPrincipal User user
+            @PathVariable String id
     ) {
-        interactionService.save(user, TargetType.PHOTO, id);
+        interactionService.save( TargetType.PHOTO, id);
     }
 
-    @DeleteMapping("/photos/{id}/save")
+    // UNSAVE
+    @DeleteMapping("/{id}/save")
     public void unsavePhoto(
-            @PathVariable String id,
-            @AuthenticationPrincipal User user
+            @PathVariable String id
     ) {
-        interactionService.unsave(user, TargetType.PHOTO, id);
+        interactionService.unsave( TargetType.PHOTO, id);
     }
 
-    @GetMapping("/photos/{id}/view")
+    // VIEW (POST – vì có ghi DB)
+    @PostMapping("/{id}/view")
     public void viewPhoto(
-            @PathVariable String id,
-            @AuthenticationPrincipal User user
+            @PathVariable String id
     ) {
-        interactionService.createView(user, TargetType.PHOTO, id);
+        interactionService.createView(TargetType.PHOTO, id);
     }
 }

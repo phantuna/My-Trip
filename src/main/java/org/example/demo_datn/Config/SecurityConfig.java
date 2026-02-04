@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers("/login","/user/driver/created",
-//                                "/truck/created").permitAll()authenticated()
+//                                "/truck/created","/api/timer//runHelloWorld").permitAll()authenticated()
                         .anyRequest().permitAll()
                 )
 //                .exceptionHandling(ex -> ex

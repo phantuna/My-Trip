@@ -1,48 +1,45 @@
 package org.example.demo_datn.Controller.interaction;
 
-
-import lombok.AllArgsConstructor;
-import org.example.demo_datn.Entity.User;
+import lombok.RequiredArgsConstructor;
 import org.example.demo_datn.Enum.TargetType;
-import org.example.demo_datn.Service.InteractionService;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.example.demo_datn.service.interaction.InteractionService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
+@RequestMapping("/api/albums")
 public class AlbumInteractionController {
+
     private final InteractionService interactionService;
 
-    @PostMapping("/albums/{id}/like")
-    public void likeAlbum(
-            @PathVariable String id,
-            @AuthenticationPrincipal User user
-    ) {
-        interactionService.likeOrUnlike(user, TargetType.ALBUM, id);
+    // LIKE / UNLIKE
+    @PostMapping("/{id}/like")
+    public void likeAlbum(@PathVariable String id) {
+        interactionService.likeOrUnlike(TargetType.ALBUM, id);
     }
 
-    @PostMapping("/albums/{id}/save")
+
+    // SAVE
+    @PostMapping("/{id}/save")
     public void saveAlbum(
-            @PathVariable String id,
-            @AuthenticationPrincipal User user
+            @PathVariable String id
     ) {
-        interactionService.save(user, TargetType.ALBUM, id);
+        interactionService.save( TargetType.ALBUM, id);
     }
 
-    @DeleteMapping("/albums/{id}/save")
+    // UNSAVE
+    @DeleteMapping("/{id}/save")
     public void unsaveAlbum(
-            @PathVariable String id,
-            @AuthenticationPrincipal User user
+            @PathVariable String id
     ) {
-        interactionService.unsave(user, TargetType.ALBUM, id);
+        interactionService.unsave( TargetType.ALBUM, id);
     }
 
-    @GetMapping("/albums/{id}/view")
+    // VIEW
+    @PostMapping("/{id}/view")
     public void viewAlbum(
-            @PathVariable String id,
-            @AuthenticationPrincipal User user
+            @PathVariable String id
     ) {
-        interactionService.createView(user, TargetType.ALBUM, id);
+        interactionService.createView( TargetType.ALBUM, id);
     }
-
 }
